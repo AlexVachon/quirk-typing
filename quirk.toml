@@ -1,0 +1,8 @@
+name          = "typing"
+version       = "1.0.0"
+license       = "MIT"
+description   = "The Quirk stdlib 'typing' package."
+repository    = "github.com/AlexVachon/quirk-typing"
+quirk-version = ">=1.4.0"
+
+[deps]
