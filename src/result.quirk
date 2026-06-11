@@ -1,0 +1,40 @@
+// `Result[T, E]` — canonical sum type for "success or error"
+// (v2.4.4). The complement of [[option.quirk|Option]]: where Option
+// models a value's presence, Result also carries an error payload
+// describing the failure mode.
+//
+// Canonical usage:
+//   from typing use { Result, Ok, Err }
+//
+//   define parse_age(s: String) -> Result {
+//       if not s.is_numeric() {
+//           return Err("not numeric: ${s}")
+//       }
+//       return Ok(s.to_int())
+//   }
+//
+//   match parse_age(user_input) {
+//       case Ok  as o => print("got ${o.value}")
+//       case Err as e => print("rejected: ${e.error}")
+//   }
+
+type Result[T, E] = Ok(value: T) | Err(error: E)
+
+extend Result {
+    define is_ok(self) -> Bool {
+        match self {
+            case Ok  => return true
+            case Err => return false
+        }
+        return false
+    }
+    define is_err(self) -> Bool { return not self.is_ok() }
+    --- Returns the success value if `Ok`, else `default_value`. ---
+    define unwrap_or(self, default_value: T) -> T {
+        match self {
+            case Ok  as o => return o.value
+            case Err      => return default_value
+        }
+        return default_value
+    }
+}

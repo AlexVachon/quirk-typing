@@ -27,6 +27,9 @@ from .interfaces use {
 
 from .callable use { Callable }
 
+from .option use { Option, Some, None }
+from .result use { Result, Ok, Err }
+
 from .exceptions use {
     Exception,
     TypeError, ValueError, IndexError, KeyError,

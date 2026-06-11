@@ -1,0 +1,48 @@
+// `Option[T]` — canonical sum type for "value or absence" (v2.4.4).
+// Standardised here so user code doesn't roll its own per-package
+// `Found(value) | Missing()` variant. Lowered as two variant structs
+// inheriting from a virtual `Option` base — see CHANGELOG v2.4.0
+// (tagged unions) and v2.4.1 (generic tagged unions).
+//
+// Canonical usage:
+//   from typing use { Option, Some, None }
+//
+//   define lookup(key: String) -> Option {
+//       if cached.has_key(key) {
+//           return Some(cached.get(key))
+//       }
+//       return None()
+//   }
+//
+//   match lookup(k) {
+//       case Some as s => print("found: ${s.value}")
+//       case None      => print("missing")
+//   }
+//
+// Helper methods (`is_some`, `is_none`, `unwrap_or`) live on the
+// union type rather than per-variant — the union is what users hold
+// in practice (function returns, container elements), and Sema's
+// per-variant narrowing only kicks in inside a `case … as v` arm.
+
+type Option[T] = Some(value: T) | None()
+
+extend Option {
+    --- Returns true when the value is present. ---
+    define is_some(self) -> Bool {
+        match self {
+            case Some => return true
+            case None => return false
+        }
+        return false
+    }
+    --- Returns true when the value is absent. ---
+    define is_none(self) -> Bool { return not self.is_some() }
+    --- Returns the wrapped value if present, else `default_value`. ---
+    define unwrap_or(self, default_value: T) -> T {
+        match self {
+            case Some as s => return s.value
+            case None      => return default_value
+        }
+        return default_value
+    }
+}
