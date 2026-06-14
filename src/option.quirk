@@ -45,4 +45,70 @@ extend Option {
         }
         return default_value
     }
+
+    --- Returns the wrapped value if present; throws `NullError` if `None`. ---
+    define unwrap(self) -> T {
+        match self {
+            case Some as s => return s.value
+            case None      => throw NullError("called unwrap() on None")
+        }
+        throw NullError("unreachable")
+    }
+
+    --- Returns the wrapped value if present, else calls `f()` for a lazy default. ---
+    define unwrap_or_else(self, f: Callable) -> T {
+        match self {
+            case Some as s => return s.value
+            case None      => return f()
+        }
+        return f()
+    }
+
+    --- Maps `Some(v)` to `Some(f(v))`; `None` stays `None`. ---
+    define map(self, f: Callable) -> Option {
+        match self {
+            case Some as s => return Some(f(s.value))
+            case None      => return None()
+        }
+        return None()
+    }
+
+    --- Monadic bind: `f` must return an `Option`. Chains lookups: `cache.get(k).and_then(parse)`. ---
+    define and_then(self, f: Callable) -> Option {
+        match self {
+            case Some as s => return f(s.value)
+            case None      => return None()
+        }
+        return None()
+    }
+
+    --- Returns `self` if `Some`, else calls `f()` for an alternative `Option`. ---
+    define or_else(self, f: Callable) -> Option {
+        match self {
+            case Some => return self
+            case None => return f()
+        }
+        return self
+    }
+
+    --- Keeps `Some(v)` only if `pred(v)` is true; otherwise `None`. ---
+    define filter(self, pred: Callable) -> Option {
+        match self {
+            case Some as s => {
+                if pred(s.value) { return Some(s.value) }
+                return None()
+            }
+            case None => return None()
+        }
+        return None()
+    }
+
+    --- Converts to `Result`: `Some(v)` → `Ok(v)`; `None` → `Err(err)`. ---
+    define ok_or(self, err: Any) -> Result {
+        match self {
+            case Some as s => return Ok(s.value)
+            case None      => return Err(err)
+        }
+        return Err(err)
+    }
 }

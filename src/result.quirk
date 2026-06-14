@@ -21,6 +21,7 @@
 type Result[T, E] = Ok(value: T) | Err(error: E)
 
 extend Result {
+    --- Returns true when the result is `Ok`. ---
     define is_ok(self) -> Bool {
         match self {
             case Ok  => return true
@@ -28,6 +29,7 @@ extend Result {
         }
         return false
     }
+    --- Returns true when the result is `Err`. ---
     define is_err(self) -> Bool { return not self.is_ok() }
     --- Returns the success value if `Ok`, else `default_value`. ---
     define unwrap_or(self, default_value: T) -> T {
@@ -36,5 +38,86 @@ extend Result {
             case Err      => return default_value
         }
         return default_value
+    }
+
+    --- Returns the success value if `Ok`; throws `ValueError` if `Err`. ---
+    define unwrap(self) -> T {
+        match self {
+            case Ok  as o => return o.value
+            case Err as e => throw ValueError("called unwrap() on Err: " + e.error.str())
+        }
+        throw ValueError("unreachable")
+    }
+
+    --- Returns the error payload if `Err`; throws `ValueError` if `Ok`. ---
+    define unwrap_err(self) -> E {
+        match self {
+            case Ok       => throw ValueError("called unwrap_err() on Ok")
+            case Err as e => return e.error
+        }
+        throw ValueError("unreachable")
+    }
+
+    --- Returns the success value if `Ok`, else calls `f(error)` for a lazy default. ---
+    define unwrap_or_else(self, f: Callable) -> T {
+        match self {
+            case Ok  as o => return o.value
+            case Err as e => return f(e.error)
+        }
+        return f(null)
+    }
+
+    --- Maps `Ok(v)` to `Ok(f(v))`; `Err(e)` stays `Err(e)`. ---
+    define map(self, f: Callable) -> Result {
+        match self {
+            case Ok  as o => return Ok(f(o.value))
+            case Err      => return self
+        }
+        return self
+    }
+
+    --- Maps `Err(e)` to `Err(f(e))`; `Ok(v)` stays `Ok(v)`. ---
+    define map_err(self, f: Callable) -> Result {
+        match self {
+            case Ok       => return self
+            case Err as e => return Err(f(e.error))
+        }
+        return self
+    }
+
+    --- Monadic bind: `f` must return a `Result`. Chains fallible steps. ---
+    define and_then(self, f: Callable) -> Result {
+        match self {
+            case Ok  as o => return f(o.value)
+            case Err      => return self
+        }
+        return self
+    }
+
+    --- Returns `self` if `Ok`, else calls `f(error)` for recovery. ---
+    define or_else(self, f: Callable) -> Result {
+        match self {
+            case Ok       => return self
+            case Err as e => return f(e.error)
+        }
+        return self
+    }
+
+    --- Converts to `Option`: `Ok(v)` → `Some(v)`; `Err(_)` → `None`. ---
+    define ok(self) -> Option {
+        match self {
+            case Ok  as o => return Some(o.value)
+            case Err      => return None()
+        }
+        return None()
+    }
+
+    --- Converts to `Option` of the error: `Err(e)` → `Some(e)`; `Ok(_)` → `None`. ---
+    define err(self) -> Option {
+        match self {
+            case Ok       => return None()
+            case Err as e => return Some(e.error)
+        }
+        return None()
     }
 }
