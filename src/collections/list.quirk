@@ -148,4 +148,48 @@ struct List : Printable, Representable, Sizeable, Iterable {
     ---
     extern define find(self, cb: Callable) -> Any
 
+    ---
+    Sorts the list in place using `cb` as the comparator and returns
+    `self` so calls can chain. The comparator follows the usual
+    convention: return a negative Int when `a` should come before `b`,
+    positive when `a` should come after, and zero when they're equal.
+
+    Implementation is insertion sort — small N is the common stdlib
+    case and we don't yet have a quicksort runtime helper. For now,
+    if you need to sort 10k+ items, do it via C-side `extern`
+    plumbing.
+
+    @param cb: Callable — `fn(a: T, b: T) => Int`
+    @returns: List — the (now-sorted) self, for chaining
+
+    @example:
+    sorted := [3, 1, 2].sort(fn(a: Int, b: Int) => a - b)  // [1, 2, 3]
+    ---
+    define sort(self, cb: Callable) -> List {
+        // Annotations are deliberately absent on `a` / `b` / `cmp`:
+        // the typed-walrus `a: Any := …` path drops inline-tagged
+        // i8* values into a slot that the Callable call-boundary
+        // can't recover cleanly. Letting inference flow from the
+        // Callable's declared return type to `cmp` keeps the
+        // unbox happening at the right place.
+        n := self.length()
+        i := 1
+        while i < n {
+            j := i
+            while j > 0 {
+                a := self.__get(j - 1)
+                b := self.__get(j)
+                cmp := cb(a, b)
+                if cmp <= 0 { j = 0 }
+                else {
+                    self.__set(j - 1, b)
+                    self.__set(j, a)
+                    j = j - 1
+                }
+            }
+            i = i + 1
+        }
+        return self
+    }
+
 }
