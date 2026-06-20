@@ -40,6 +40,27 @@ struct List : Printable, Representable, Sizeable, Iterable {
     extern define append(self, item: Any) -> void
 
     ---
+    Append every element of `other` to `self` in place. Mutates
+    `self`; returns nothing. Use `+` if you want a fresh List
+    instead of mutating. (Named `append_all` rather than the
+    Python-conventional `extend` because `extend` is a reserved
+    keyword in Quirk — `extend Foo { ... }` blocks add methods to
+    an existing struct.)
+
+    @example xs.append_all([4, 5, 6])  // xs is now [1, 2, 3, 4, 5, 6]
+    ---
+    extern define append_all(self, other: List) -> void
+
+    ---
+    Concatenation. Returns a fresh List containing every element
+    of `self` followed by every element of `other`. Neither input
+    is mutated. Called by `xs + ys` at the call site.
+
+    @example zs := [1, 2] + [3, 4]   // [1, 2, 3, 4]
+    ---
+    extern define __add(self, other: List) -> List
+
+    ---
     Removes and returns the last element.
     @returns: Any — the removed element
     @throws IndexError — if the list is empty
@@ -166,20 +187,14 @@ struct List : Printable, Representable, Sizeable, Iterable {
     sorted := [3, 1, 2].sort(fn(a: Int, b: Int) => a - b)  // [1, 2, 3]
     ---
     define sort(self, cb: Callable) -> List {
-        // Annotations are deliberately absent on `a` / `b` / `cmp`:
-        // the typed-walrus `a: Any := …` path drops inline-tagged
-        // i8* values into a slot that the Callable call-boundary
-        // can't recover cleanly. Letting inference flow from the
-        // Callable's declared return type to `cmp` keeps the
-        // unbox happening at the right place.
         n := self.length()
         i := 1
         while i < n {
             j := i
             while j > 0 {
-                a := self.__get(j - 1)
-                b := self.__get(j)
-                cmp := cb(a, b)
+                a: Any := self.__get(j - 1)
+                b: Any := self.__get(j)
+                cmp: Int := cb(a, b)
                 if cmp <= 0 { j = 0 }
                 else {
                     self.__set(j - 1, b)
