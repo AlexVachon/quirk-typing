@@ -226,6 +226,56 @@ struct List : Printable, Representable, Sizeable, Iterable {
     }
 
     ---
+    Sum of all elements. Reduces via `+` starting from 0. Works
+    for any numeric type — Sema's `+` handles Int/Double widening
+    so a mixed [Int, Double, ...] list returns a Double total.
+
+    @example [1, 2, 3].sum()        // 6
+    @example List().sum()           // 0
+    ---
+    define sum(self) -> Any {
+        return self.reduce(0, fn(acc: Any, x: Any) => acc + x)
+    }
+
+    ---
+    Smallest element (by `<`). Returns `null` on an empty list.
+    Uses the first element as the seed so heterogeneous lists
+    don't have to start from a sentinel like `Int.MAX_VALUE`.
+
+    @example [3, 1, 4, 1, 5].min()  // 1
+    @example List().min()           // null
+    ---
+    define min(self) -> Any {
+        if self.length() == 0 { return null }
+        out := self.__get(0)
+        i := 1
+        while i < self.length() {
+            v := self.__get(i)
+            if v < out { out = v }
+            i = i + 1
+        }
+        return out
+    }
+
+    ---
+    Largest element (by `>`). Returns `null` on an empty list.
+    Same shape as `min()`.
+
+    @example [3, 1, 4, 1, 5].max()  // 5
+    ---
+    define max(self) -> Any {
+        if self.length() == 0 { return null }
+        out := self.__get(0)
+        i := 1
+        while i < self.length() {
+            v := self.__get(i)
+            if v > out { out = v }
+            i = i + 1
+        }
+        return out
+    }
+
+    ---
     Sorts the list in place using `cb` as the comparator and returns
     `self` so calls can chain. The comparator follows the usual
     convention: return a negative Int when `a` should come before `b`,
