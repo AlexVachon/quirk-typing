@@ -61,6 +61,19 @@ struct List : Printable, Representable, Sizeable, Iterable {
     extern define __add(self, other: List) -> List
 
     ---
+    Repetition. Returns a fresh List with self's elements
+    repeated `n` times. `n <= 0` returns the empty list (Python
+    semantics). Element values are SHARED — same shape as
+    Python's `[0] * 5`; reassigning one element via index in
+    one row doesn't affect the others, but mutating a shared
+    inner object would.
+
+    @example zs := [0] * 5           // [0, 0, 0, 0, 0]
+    @example pairs := [1, 2] * 3     // [1, 2, 1, 2, 1, 2]
+    ---
+    extern define __mul(self, n: Int) -> List
+
+    ---
     Removes and returns the last element.
     @returns: Any — the removed element
     @throws IndexError — if the list is empty
