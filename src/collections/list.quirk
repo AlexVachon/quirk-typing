@@ -1,5 +1,6 @@
 from typing.primitives.string use { String }
 from typing.callable use { Callable }
+from typing.collections.set use { Set }
 from typing.interfaces.printable use { Printable }
 from typing.interfaces.representable use { Representable }
 from typing.interfaces.sizeable use { Sizeable }
@@ -291,6 +292,27 @@ struct List : Printable, Representable, Sizeable, Iterable {
             if v not in out {
                 out.append(v)
             }
+            i = i + 1
+        }
+        return out
+    }
+
+    ---
+    Materialise the list's elements into a fresh `Set`, dropping
+    duplicates. Useful for quick dedup with set semantics or for
+    O(1) membership tests after building from a list.
+
+    Note: this introduces a `from .set` import inside the List
+    package — keep that in mind if you're rebuilding the package
+    graph from scratch.
+
+    @example pending := [1, 2, 1, 3].to_set()   // {1, 2, 3}
+    ---
+    define to_set(self) -> Set {
+        out := Set()
+        i := 0
+        while i < self.length() {
+            out.add(self.__get(i))
             i = i + 1
         }
         return out

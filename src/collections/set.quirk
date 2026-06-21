@@ -106,6 +106,16 @@ struct Set : Printable, Sizeable, Iterable {
     define __add(self, other: Set) -> Set { return self.union(other) }
     define __sub(self, other: Set) -> Set { return self.difference(other) }
 
+    ---
+    Materialise the set's elements into a fresh List in insertion
+    order. Useful when downstream code wants index/sort/slice
+    operations — Set itself is hash-keyed and doesn't support
+    `__get(i)`. Order matches the iterator (insertion order).
+
+    @example users.to_list().sort(fn(a, b) => a.name.cmp(b.name))
+    ---
+    extern define to_list(self) -> List
+
     extern define __iter(self) -> SetIterator
     extern define __str(self) -> String
 }
