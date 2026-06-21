@@ -79,6 +79,19 @@ struct Map : Printable, Sizeable, Iterable {
     extern define get(self, key: String) -> Any
 
     ---
+    Returns the value for `key`, or `default` when the key isn't
+    present. Matches Python's `dict.get(key, default)`. Avoids the
+    `if m.has(k) { m.get(k) } else { d }` pattern.
+
+    @example m.get_or("retries", 3)
+    @example headers.get_or("Content-Type", "application/json")
+    ---
+    define get_or(self, key: String, default: Any) -> Any {
+        if self.has(key) { return self.get(key) }
+        return default
+    }
+
+    ---
     Returns `true` if the key exists in the map.
     @param key: String
     @returns: Bool
