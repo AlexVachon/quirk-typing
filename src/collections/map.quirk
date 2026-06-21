@@ -55,6 +55,23 @@ struct Map : Printable, Sizeable, Iterable {
     extern define put(self, key: String, value: Any) -> void
 
     ---
+    Copy every entry from `other` into `self`, overwriting any
+    same-key values with other's. Mutates `self`; returns nothing.
+    Use `+` if you want a fresh merged Map instead.
+
+    @example m.put_all({ "auth": "token" })   // updates m in place
+    ---
+    extern define put_all(self, other: Map) -> void
+
+    ---
+    Merge two Maps into a fresh result. Right side wins on key
+    collision — `{a: 1} + {a: 2}` is `{a: 2}`. Mirrors Python's
+    `{**m1, **m2}` precedence. Neither input is mutated. Called
+    via `m1 + m2`.
+    ---
+    extern define __add(self, other: Map) -> Map
+
+    ---
     Returns the value for the given key, or `null` if not found.
     @param key: String — the key to look up
     @returns: Any — the associated value, or `null`
