@@ -35,6 +35,14 @@ struct String : Primitive, Comparable, Sizeable, Iterable, Representable {
     extern define __del(self)
 
     extern define __add(self, other: String) -> String
+    ---
+    `s * n` repeats `self` `n` times into a fresh String. `n <= 0`
+    returns the empty string (Python semantics).
+
+    @example "-" * 40   // 40-char separator
+    @example "ab" * 3   // "ababab"
+    ---
+    extern define __mul(self, n: Int) -> String
     extern define __eq(self, other: String) -> Bool
     extern define __lt(self, other: String) -> Bool
     extern define __le(self, other: String) -> Bool
