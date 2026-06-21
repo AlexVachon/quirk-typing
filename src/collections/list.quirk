@@ -183,6 +183,49 @@ struct List : Printable, Representable, Sizeable, Iterable {
     extern define find(self, cb: Callable) -> Any
 
     ---
+    Returns the first element, or `null` when the list is empty.
+    Same shape as `xs.__get(0)` but null-safe (no index-out-of-range
+    on empty input).
+
+    @example [10, 20, 30].first()   // 10
+    @example List().first()         // null
+    ---
+    define first(self) -> Any {
+        if self.length() == 0 { return null }
+        return self.__get(0)
+    }
+
+    ---
+    Returns the last element, or `null` when the list is empty.
+    Same shape as `xs.__get(-1)` but null-safe and slightly clearer
+    at the call site.
+
+    @example [10, 20, 30].last()    // 30
+    @example List().last()          // null
+    ---
+    define last(self) -> Any {
+        n := self.length()
+        if n == 0 { return null }
+        return self.__get(n - 1)
+    }
+
+    ---
+    Returns a fresh List with elements in reverse order. Does not
+    mutate `self`.
+
+    @example [1, 2, 3].reverse()    // [3, 2, 1]
+    ---
+    define reverse(self) -> List {
+        out := List()
+        i := self.length() - 1
+        while i >= 0 {
+            out.append(self.__get(i))
+            i = i - 1
+        }
+        return out
+    }
+
+    ---
     Sorts the list in place using `cb` as the comparator and returns
     `self` so calls can chain. The comparator follows the usual
     convention: return a negative Int when `a` should come before `b`,
