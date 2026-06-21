@@ -94,6 +94,18 @@ struct Set : Printable, Sizeable, Iterable {
     ---
     extern define difference(self, other: Set) -> Set
 
+    ---
+    Operator-overload aliases. `s1 + s2` is union; `s1 - s2` is
+    difference. Sema's binary-op dispatch picks these up
+    automatically via the magic-method path. Both return fresh
+    sets and leave the operands untouched.
+
+    @example a + b   // union
+    @example a - b   // difference
+    ---
+    define __add(self, other: Set) -> Set { return self.union(other) }
+    define __sub(self, other: Set) -> Set { return self.difference(other) }
+
     extern define __iter(self) -> SetIterator
     extern define __str(self) -> String
 }
