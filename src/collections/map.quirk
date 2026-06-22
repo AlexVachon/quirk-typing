@@ -117,6 +117,40 @@ struct Map : Printable, Sizeable, Iterable {
     extern define keys(self) -> List
 
     ---
+    Returns the map's entries as a List of `[key, value]` lists.
+    Order matches insertion order (matches `keys()` / `values()`).
+    Useful for pairwise iteration:
+
+      for pair in m.items() {
+          k := pair.__get(0)
+          v := pair.__get(1)
+          ...
+      }
+
+    NOTE: printing a List of nested Lists currently displays as
+    `[]` due to a separate display-path bug (raw struct pointers
+    stored in collections aren't recognised by
+    `quirk_opaque_to_string`). The values are stored correctly
+    and iteration works; only the `print()` rendering is wrong.
+
+    @example for pair in m.items() { ... }
+    ---
+    define items(self) -> List {
+        out := List()
+        keys := self.keys()
+        i := 0
+        while i < keys.length() {
+            k := keys.get(i)
+            pair := List()
+            pair.append(k)
+            pair.append(self.get(k))
+            out.append(pair)
+            i = i + 1
+        }
+        return out
+    }
+
+    ---
     Returns all values as a `List`.
     @returns: List
     ---
