@@ -11,9 +11,11 @@ struct ListIterator : Iterator {
     _list_ref: List
     _idx: Int
 
-    extern define __init(self, l: List)
-    extern define __has_next(self) -> Bool
-    extern define __next(self) -> Any
+    extern {
+        define __init(self, l: List)
+        define __has_next(self) -> Bool
+        define __next(self) -> Any
+    }
 }
 
 ---
@@ -32,156 +34,158 @@ struct List : Printable, Representable, Sizeable, Iterable {
     _size: Int
     _capacity: Int
 
-    extern define __init(self)
+    extern {
+        define __init(self)
 
-    ---
-    Appends a value to the end of the list.
-    @param item: Any — the value to add
-    ---
-    extern define append(self, item: Any) -> void
+        ---
+        Appends a value to the end of the list.
+        @param item: Any — the value to add
+        ---
+        define append(self, item: Any) -> void
 
-    ---
-    Append every element of `other` to `self` in place. Mutates
-    `self`; returns nothing. Use `+` if you want a fresh List
-    instead of mutating. (Named `append_all` rather than the
-    Python-conventional `extend` because `extend` is a reserved
-    keyword in Quirk — `extend Foo { ... }` blocks add methods to
-    an existing struct.)
+        ---
+        Append every element of `other` to `self` in place. Mutates
+        `self`; returns nothing. Use `+` if you want a fresh List
+        instead of mutating. (Named `append_all` rather than the
+        Python-conventional `extend` because `extend` is a reserved
+        keyword in Quirk — `extend Foo { ... }` blocks add methods to
+        an existing struct.)
 
-    @example xs.append_all([4, 5, 6])  // xs is now [1, 2, 3, 4, 5, 6]
-    ---
-    extern define append_all(self, other: List) -> void
+        @example xs.append_all([4, 5, 6])  // xs is now [1, 2, 3, 4, 5, 6]
+        ---
+        define append_all(self, other: List) -> void
 
-    ---
-    Concatenation. Returns a fresh List containing every element
-    of `self` followed by every element of `other`. Neither input
-    is mutated. Called by `xs + ys` at the call site.
+        ---
+        Concatenation. Returns a fresh List containing every element
+        of `self` followed by every element of `other`. Neither input
+        is mutated. Called by `xs + ys` at the call site.
 
-    @example zs := [1, 2] + [3, 4]   // [1, 2, 3, 4]
-    ---
-    extern define __add(self, other: List) -> List
+        @example zs := [1, 2] + [3, 4]   // [1, 2, 3, 4]
+        ---
+        define __add(self, other: List) -> List
 
-    ---
-    Repetition. Returns a fresh List with self's elements
-    repeated `n` times. `n <= 0` returns the empty list (Python
-    semantics). Element values are SHARED — same shape as
-    Python's `[0] * 5`; reassigning one element via index in
-    one row doesn't affect the others, but mutating a shared
-    inner object would.
+        ---
+        Repetition. Returns a fresh List with self's elements
+        repeated `n` times. `n <= 0` returns the empty list (Python
+        semantics). Element values are SHARED — same shape as
+        Python's `[0] * 5`; reassigning one element via index in
+        one row doesn't affect the others, but mutating a shared
+        inner object would.
 
-    @example zs := [0] * 5           // [0, 0, 0, 0, 0]
-    @example pairs := [1, 2] * 3     // [1, 2, 1, 2, 1, 2]
-    ---
-    extern define __mul(self, n: Int) -> List
+        @example zs := [0] * 5           // [0, 0, 0, 0, 0]
+        @example pairs := [1, 2] * 3     // [1, 2, 1, 2, 1, 2]
+        ---
+        define __mul(self, n: Int) -> List
 
-    ---
-    Removes and returns the last element.
-    @returns: Any — the removed element
-    @throws IndexError — if the list is empty
-    ---
-    extern define pop(self) -> Any
+        ---
+        Removes and returns the last element.
+        @returns: Any — the removed element
+        @throws IndexError — if the list is empty
+        ---
+        define pop(self) -> Any
 
-    ---
-    Returns the number of elements.
-    @returns: Int — element count
-    ---
-    extern define length(self) -> Int
+        ---
+        Returns the number of elements.
+        @returns: Int — element count
+        ---
+        define length(self) -> Int
 
-    ---
-    Removes all elements from the list.
-    ---
-    extern define clear(self) -> void
+        ---
+        Removes all elements from the list.
+        ---
+        define clear(self) -> void
 
-    ---
-    Returns `true` if the list has no elements.
-    @returns: Bool
-    ---
-    extern define is_empty(self) -> Bool
+        ---
+        Returns `true` if the list has no elements.
+        @returns: Bool
+        ---
+        define is_empty(self) -> Bool
 
-    extern define _resize(self, new_cap: Int) -> void
+        define _resize(self, new_cap: Int) -> void
 
-    extern define __iter(self) -> ListIterator
+        define __iter(self) -> ListIterator
 
-    ---
-    Returns the element at the given index.
-    @param index: Int — zero-based position (negative indices not supported)
-    @returns: Any — the element at that index
-    @throws IndexError — if index is out of bounds
-    ---
-    extern define __get(self, index: Int) -> Any
+        ---
+        Returns the element at the given index.
+        @param index: Int — zero-based position (negative indices not supported)
+        @returns: Any — the element at that index
+        @throws IndexError — if index is out of bounds
+        ---
+        define __get(self, index: Int) -> Any
 
-    ---
-    Sets the element at the given index.
-    @param index: Int — zero-based position
-    @param item: Any — the new value
-    @throws IndexError if index is out of bounds
-    ---
-    extern define __set(self, index: Int, item: Any) -> void
+        ---
+        Sets the element at the given index.
+        @param index: Int — zero-based position
+        @param item: Any — the new value
+        @throws IndexError if index is out of bounds
+        ---
+        define __set(self, index: Int, item: Any) -> void
 
-    extern define __del(self) -> void
-    extern define __str(self) -> String
-    extern define __repr(self) -> String
+        define __del(self) -> void
+        define __str(self) -> String
+        define __repr(self) -> String
 
-    ---
-    Transforms each element and returns a new list.
-    @param cb: Callable — `fn(element: T) => U`
-    @returns: List — new list of transformed values
+        ---
+        Transforms each element and returns a new list.
+        @param cb: Callable — `fn(element: T) => U`
+        @returns: List — new list of transformed values
 
-    @example:
-    doubled := [1, 2, 3].map(fn(x: Int) => x * 2)  // [2, 4, 6]
-    ---
-    extern define map(self, cb: Callable) -> List
+        @example:
+        doubled := [1, 2, 3].map(fn(x: Int) => x * 2)  // [2, 4, 6]
+        ---
+        define map(self, cb: Callable) -> List
 
-    ---
-    Returns a new list containing only elements for which `cb` returns `true`.
-    @param cb: Callable — `fn(element: T) => Bool`
-    @returns: List — filtered list
+        ---
+        Returns a new list containing only elements for which `cb` returns `true`.
+        @param cb: Callable — `fn(element: T) => Bool`
+        @returns: List — filtered list
 
-    @example:
-    evens := [1, 2, 3, 4].filter(fn(x: Int) => x % 2 == 0)  // [2, 4]
-    ---
-    extern define filter(self, cb: Callable) -> List
+        @example:
+        evens := [1, 2, 3, 4].filter(fn(x: Int) => x % 2 == 0)  // [2, 4]
+        ---
+        define filter(self, cb: Callable) -> List
 
-    ---
-    Calls `cb` for each element. Returns nothing.
-    @param cb: Callable — `fn(element: T) => void`
+        ---
+        Calls `cb` for each element. Returns nothing.
+        @param cb: Callable — `fn(element: T) => void`
 
-    @example:
-    [1, 2, 3].each(fn(x: Int) => print(x))
-    ---
-    extern define each(self, cb: Callable) -> void
+        @example:
+        [1, 2, 3].each(fn(x: Int) => print(x))
+        ---
+        define each(self, cb: Callable) -> void
 
-    ---
-    Folds all elements into a single accumulated value.
-    @param initial: Any — the starting accumulator value
-    @param cb: Callable — `fn(acc: T, element: T) => T`
-    @returns: Any — final accumulated value
+        ---
+        Folds all elements into a single accumulated value.
+        @param initial: Any — the starting accumulator value
+        @param cb: Callable — `fn(acc: T, element: T) => T`
+        @returns: Any — final accumulated value
 
-    @example:
-    sum := [1, 2, 3].reduce(0, fn(acc: Int, x: Int) => acc + x)  // 6
-    ---
-    extern define reduce(self, initial: Any, cb: Callable) -> Any
+        @example:
+        sum := [1, 2, 3].reduce(0, fn(acc: Int, x: Int) => acc + x)  // 6
+        ---
+        define reduce(self, initial: Any, cb: Callable) -> Any
 
-    ---
-    Returns `true` if at least one element satisfies the predicate.
-    @param cb: Callable — `fn(element: T) => Bool`
-    @returns: Bool
-    ---
-    extern define any(self, cb: Callable) -> Bool
+        ---
+        Returns `true` if at least one element satisfies the predicate.
+        @param cb: Callable — `fn(element: T) => Bool`
+        @returns: Bool
+        ---
+        define any(self, cb: Callable) -> Bool
 
-    ---
-    Returns `true` if every element satisfies the predicate.
-    @param cb: Callable — `fn(element: T) => Bool`
-    @returns: Bool
-    ---
-    extern define all(self, cb: Callable) -> Bool
+        ---
+        Returns `true` if every element satisfies the predicate.
+        @param cb: Callable — `fn(element: T) => Bool`
+        @returns: Bool
+        ---
+        define all(self, cb: Callable) -> Bool
 
-    ---
-    Returns the first element that satisfies the predicate, or `null` if none found.
-    @param cb: Callable — `fn(element: T) => Bool`
-    @returns: Any — the matching element, or `null`
-    ---
-    extern define find(self, cb: Callable) -> Any
+        ---
+        Returns the first element that satisfies the predicate, or `null` if none found.
+        @param cb: Callable — `fn(element: T) => Bool`
+        @returns: Any — the matching element, or `null`
+        ---
+        define find(self, cb: Callable) -> Any
+    }
 
     ---
     Returns the first element, or `null` when the list is empty.

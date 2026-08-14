@@ -7,16 +7,18 @@ from typing.interfaces.parseable use { Parseable }
 Boolean type. Only two values: `true` and `false`.
 ---
 struct Bool : Primitive, Comparable, Parseable {
-    extern define str(self) -> String
-    extern define __str(self) -> String
-    extern define __eq(self, other: Bool) -> Bool
-    extern define __lt(self, other: Bool) -> Bool
+    extern {
+        define str(self) -> String
+        define __str(self) -> String
+        define __eq(self, other: Bool) -> Bool
+        define __lt(self, other: Bool) -> Bool
 
-    ---
-    Parses `"true"` or `"false"`.
-    @param s: String
-    @returns: Bool
-    @throws ValueError — if `s` is not `"true"` or `"false"`
-    ---
-    extern define parse(s: String) -> Bool
+        ---
+        Parses `"true"` or `"false"`.
+        @param s: String
+        @returns: Bool
+        @throws ValueError — if `s` is not `"true"` or `"false"`
+        ---
+        define parse(s: String) -> Bool
+    }
 }

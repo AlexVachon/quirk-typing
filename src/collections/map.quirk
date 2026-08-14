@@ -8,9 +8,11 @@ struct MapIterator : Iterator {
     _map_ref: Map
     _idx: Int
 
-    extern define __init(self, m: Map)
-    extern define __has_next(self) -> Bool
-    extern define __next(self) -> String
+    extern {
+        define __init(self, m: Map)
+        define __has_next(self) -> Bool
+        define __next(self) -> String
+    }
 }
 
 struct MapPairIterator : Iterator {
@@ -18,9 +20,11 @@ struct MapPairIterator : Iterator {
     _idx: Int
     _current_value: Any
 
-    extern define __has_next(self) -> Bool
-    extern define __next(self) -> String
-    extern define __current_value(self) -> Any
+    extern {
+        define __has_next(self) -> Bool
+        define __next(self) -> String
+        define __current_value(self) -> Any
+    }
 }
 
 ---
@@ -44,39 +48,41 @@ struct Map : Printable, Sizeable, Iterable {
     _order_size: Int
     _order_capacity: Int
 
-    extern define __init(self)
-    extern define __del(self) -> void
+    extern {
+        define __init(self)
+        define __del(self) -> void
 
-    ---
-    Inserts or updates a key-value pair.
-    @param key: String — the key
-    @param value: Any — the value to associate
-    ---
-    extern define put(self, key: String, value: Any) -> void
+        ---
+        Inserts or updates a key-value pair.
+        @param key: String — the key
+        @param value: Any — the value to associate
+        ---
+        define put(self, key: String, value: Any) -> void
 
-    ---
-    Copy every entry from `other` into `self`, overwriting any
-    same-key values with other's. Mutates `self`; returns nothing.
-    Use `+` if you want a fresh merged Map instead.
+        ---
+        Copy every entry from `other` into `self`, overwriting any
+        same-key values with other's. Mutates `self`; returns nothing.
+        Use `+` if you want a fresh merged Map instead.
 
-    @example m.put_all({ "auth": "token" })   // updates m in place
-    ---
-    extern define put_all(self, other: Map) -> void
+        @example m.put_all({ "auth": "token" })   // updates m in place
+        ---
+        define put_all(self, other: Map) -> void
 
-    ---
-    Merge two Maps into a fresh result. Right side wins on key
-    collision — `{a: 1} + {a: 2}` is `{a: 2}`. Mirrors Python's
-    `{**m1, **m2}` precedence. Neither input is mutated. Called
-    via `m1 + m2`.
-    ---
-    extern define __add(self, other: Map) -> Map
+        ---
+        Merge two Maps into a fresh result. Right side wins on key
+        collision — `{a: 1} + {a: 2}` is `{a: 2}`. Mirrors Python's
+        `{**m1, **m2}` precedence. Neither input is mutated. Called
+        via `m1 + m2`.
+        ---
+        define __add(self, other: Map) -> Map
 
-    ---
-    Returns the value for the given key, or `null` if not found.
-    @param key: String — the key to look up
-    @returns: Any — the associated value, or `null`
-    ---
-    extern define get(self, key: String) -> Any
+        ---
+        Returns the value for the given key, or `null` if not found.
+        @param key: String — the key to look up
+        @returns: Any — the associated value, or `null`
+        ---
+        define get(self, key: String) -> Any
+    }
 
     ---
     Returns the value for `key`, or `default` when the key isn't
@@ -91,30 +97,32 @@ struct Map : Printable, Sizeable, Iterable {
         return default
     }
 
-    ---
-    Returns `true` if the key exists in the map.
-    @param key: String
-    @returns: Bool
-    ---
-    extern define has(self, key: String) -> Bool
+    extern {
+        ---
+        Returns `true` if the key exists in the map.
+        @param key: String
+        @returns: Bool
+        ---
+        define has(self, key: String) -> Bool
 
-    ---
-    Removes the entry with the given key. Does nothing if the key is absent.
-    @param key: String
-    ---
-    extern define remove(self, key: String) -> void
+        ---
+        Removes the entry with the given key. Does nothing if the key is absent.
+        @param key: String
+        ---
+        define remove(self, key: String) -> void
 
-    ---
-    Returns the number of key-value pairs.
-    @returns: Int
-    ---
-    extern define length(self) -> Int
+        ---
+        Returns the number of key-value pairs.
+        @returns: Int
+        ---
+        define length(self) -> Int
 
-    ---
-    Returns all keys as a `List` of `String`.
-    @returns: List
-    ---
-    extern define keys(self) -> List
+        ---
+        Returns all keys as a `List` of `String`.
+        @returns: List
+        ---
+        define keys(self) -> List
+    }
 
     ---
     Returns the map's entries as a List of `[key, value]` lists.
@@ -150,16 +158,18 @@ struct Map : Printable, Sizeable, Iterable {
         return out
     }
 
-    ---
-    Returns all values as a `List`.
-    @returns: List
-    ---
-    extern define values(self) -> List
+    extern {
+        ---
+        Returns all values as a `List`.
+        @returns: List
+        ---
+        define values(self) -> List
 
-    ---
-    Removes all entries from the map.
-    ---
-    extern define clear(self) -> void
+        ---
+        Removes all entries from the map.
+        ---
+        define clear(self) -> void
+    }
 
     ---
     Returns `true` if the map has no entries.
@@ -167,30 +177,32 @@ struct Map : Printable, Sizeable, Iterable {
     ---
     define is_empty(self) -> Bool { return self.length() == 0 }
 
-    extern define __get(self, key: String) -> Any
-    extern define __set(self, key: String, value: Any) -> void
-    extern define __str(self) -> String
-    extern define __iter(self) -> MapIterator
-    extern define __iter_pairs(self) -> MapPairIterator
+    extern {
+        define __get(self, key: String) -> Any
+        define __set(self, key: String, value: Any) -> void
+        define __str(self) -> String
+        define __iter(self) -> MapIterator
+        define __iter_pairs(self) -> MapPairIterator
 
-    ---
-    Calls `cb` for each key-value pair.
-    @param cb: Callable — `fn(key: String, value: Any)`
+        ---
+        Calls `cb` for each key-value pair.
+        @param cb: Callable — `fn(key: String, value: Any)`
 
-    @example:
-    m.each(fn(k: String, v: Any) => print(k + ": " + v))
-    ---
-    extern define each(self, cb: Callable) -> void
+        @example:
+        m.each(fn(k: String, v: Any) => print(k + ": " + v))
+        ---
+        define each(self, cb: Callable) -> void
 
-    ---
-    Calls `cb` for each value only.
-    @param cb: Callable — `fn(value: Any)`
-    ---
-    extern define each_value(self, cb: Callable) -> void
+        ---
+        Calls `cb` for each value only.
+        @param cb: Callable — `fn(value: Any)`
+        ---
+        define each_value(self, cb: Callable) -> void
 
-    ---
-    Calls `cb` for each key only.
-    @param cb: Callable — `fn(key: String)`
-    ---
-    extern define each_key(self, cb: Callable) -> void
+        ---
+        Calls `cb` for each key only.
+        @param cb: Callable — `fn(key: String)`
+        ---
+        define each_key(self, cb: Callable) -> void
+    }
 }

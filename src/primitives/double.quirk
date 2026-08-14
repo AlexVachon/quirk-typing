@@ -12,29 +12,31 @@ print(x.ceil())    // 4.0
 print(x.str())     // "3.14"
 ---
 struct Double : Primitive, Comparable, Parseable {
-    extern define str(self) -> String
-    extern define __str(self) -> String
-    extern define __eq(self, other: Double) -> Bool
-    extern define __lt(self, other: Double) -> Bool
-    extern define to_int(self) -> Int
+    extern {
+        define str(self) -> String
+        define __str(self) -> String
+        define __eq(self, other: Double) -> Bool
+        define __lt(self, other: Double) -> Bool
+        define to_int(self) -> Int
 
-    extern define abs(self) -> Double
-    extern define ceil(self) -> Double
-    extern define floor(self) -> Double
-    extern define round(self) -> Double
+        define abs(self) -> Double
+        define ceil(self) -> Double
+        define floor(self) -> Double
+        define round(self) -> Double
 
-    ---
-    Returns the square root.
-    @returns: Double
-    @throws ValueError — if the value is negative
-    ---
-    extern define sqrt(self) -> Double
+        ---
+        Returns the square root.
+        @returns: Double
+        @throws ValueError — if the value is negative
+        ---
+        define sqrt(self) -> Double
 
-    ---
-    Parses a string as a floating-point number.
-    @param s: String
-    @returns: Double
-    @throws ValueError — if `s` is not a valid number
-    ---
-    extern define parse(s: String) -> Double
+        ---
+        Parses a string as a floating-point number.
+        @param s: String
+        @returns: Double
+        @throws ValueError — if `s` is not a valid number
+        ---
+        define parse(s: String) -> Double
+    }
 }

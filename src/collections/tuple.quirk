@@ -9,9 +9,11 @@ struct TupleIterator : Iterator {
     _tuple_ref: Any
     _idx: Int
 
-    extern define __init(self, t: Tuple) -> void
-    extern define __has_next(self) -> Bool
-    extern define __next(self) -> Any
+    extern {
+        define __init(self, t: Tuple) -> void
+        define __has_next(self) -> Bool
+        define __next(self) -> Any
+    }
 }
 
 ---
@@ -34,29 +36,31 @@ struct Tuple : Printable, Sizeable, Iterable {
     _data: Any
     _size: Int
 
-    ---
-    Returns the element at the given index.
-    @param index: Int — zero-based position
-    @returns: Any — the element at that index
-    @throws IndexError — if index is out of bounds
-    ---
-    extern define __get(self, index: Int) -> Any
+    extern {
+        ---
+        Returns the element at the given index.
+        @param index: Int — zero-based position
+        @returns: Any — the element at that index
+        @throws IndexError — if index is out of bounds
+        ---
+        define __get(self, index: Int) -> Any
 
-    ---
-    Returns a human-readable string representation of this tuple.
-    @returns: String — e.g. `"(1, hello, true)"`
-    ---
-    extern define __str(self) -> String
+        ---
+        Returns a human-readable string representation of this tuple.
+        @returns: String — e.g. `"(1, hello, true)"`
+        ---
+        define __str(self) -> String
 
-    ---
-    Returns the number of elements in this tuple.
-    @returns: Int — element count
-    ---
-    extern define length(self) -> Int
+        ---
+        Returns the number of elements in this tuple.
+        @returns: Int — element count
+        ---
+        define length(self) -> Int
 
-    ---
-    Returns an iterator over the elements of this tuple.
-    @returns: TupleIterator
-    ---
-    extern define __iter(self) -> TupleIterator
+        ---
+        Returns an iterator over the elements of this tuple.
+        @returns: TupleIterator
+        ---
+        define __iter(self) -> TupleIterator
+    }
 }

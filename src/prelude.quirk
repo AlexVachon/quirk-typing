@@ -1,0 +1,41 @@
+// `typing.prelude` — one-stop re-export module for the pieces every
+// stdlib type file drags in. Instead of the 5–8 import lines each
+// `packages/typing/**/*.quirk` needs today:
+//
+//   from typing.primitives.string use { String }
+//   from typing.interfaces.primitive use { Primitive }
+//   from typing.interfaces.comparable use { Comparable }
+//   from typing.interfaces.sizeable use { Sizeable }
+//   from typing.interfaces.iterable use { Iterable }
+//   from typing.interfaces.iterator use { Iterator }
+//   from typing.interfaces.representable use { Representable }
+//
+// a builtin type file can now write:
+//
+//   from typing.prelude use { String, Primitive, Comparable, Sizeable, Iterable, Iterator, Representable }
+//
+// Same names, one line. Only the imports you actually reference need
+// listing — `use *` isn't supported. The prelude covers everything
+// stdlib type files typically need; user code should prefer
+// `from typing use { ... }` (top-level typing index) which is broader.
+
+from .primitives use {
+    Int, Double, Bool,
+    String, StringIterator
+}
+
+from .interfaces use {
+    Printable,
+    Equatable,
+    Comparable,
+    Hashable,
+    Parseable,
+    Sizeable,
+    Iterable,
+    Iterator,
+    Representable,
+    Primitive,
+    ISerializable
+}
+
+from .callable use { Callable }
