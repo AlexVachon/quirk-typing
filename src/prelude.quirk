@@ -3,16 +3,15 @@
 // `packages/typing/**/*.quirk` needs today:
 //
 //   from typing.primitives.string use { String }
+//   from typing.collections.list  use { List }
+//   from typing.collections.map   use { Map }
 //   from typing.interfaces.primitive use { Primitive }
 //   from typing.interfaces.comparable use { Comparable }
-//   from typing.interfaces.sizeable use { Sizeable }
-//   from typing.interfaces.iterable use { Iterable }
-//   from typing.interfaces.iterator use { Iterator }
-//   from typing.interfaces.representable use { Representable }
+//   …
 //
-// a builtin type file can now write:
+// a builtin type file (or user code) can now write:
 //
-//   from typing.prelude use { String, Primitive, Comparable, Sizeable, Iterable, Iterator, Representable }
+//   from typing.prelude use { String, List, Map, Primitive, Comparable, ... }
 //
 // Same names, one line. Only the imports you actually reference need
 // listing — `use *` isn't supported. The prelude covers everything
@@ -22,6 +21,18 @@
 from .primitives use {
     Int, Double, Bool,
     String, StringIterator
+}
+
+// Collections landed in prelude at v1.15.1 — the initial v1.15.0
+// shipped without them, which meant `from typing.prelude use { Map,
+// List }` (a very natural import in user code) errored in the LSP
+// export-check and forced users to import from the per-module paths.
+from .collections use {
+    List, ListIterator,
+    Map, MapIterator, MapPairIterator,
+    Set, SetIterator,
+    Queue, QueueIterator,
+    Tuple, TupleIterator
 }
 
 from .interfaces use {
