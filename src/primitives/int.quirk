@@ -4,7 +4,7 @@ from typing.interfaces.comparable use { Comparable }
 from typing.interfaces.parseable use { Parseable }
 
 ---
-32-bit signed integer.
+64-bit signed integer.
 Supports arithmetic operators (`+`, `-`, `*`, `/`, `%`, `**`) and comparisons.
 
 @example:
