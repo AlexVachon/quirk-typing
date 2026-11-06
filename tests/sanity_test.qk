@@ -1,0 +1,45 @@
+// Sanity checks for the core types `typing` declares. Run with `quirk test`.
+// Each check throws on failure, so the file exits non-zero.
+
+define expect(ok: Bool, what: String) -> void {
+    if not ok {
+        throw AssertionError(what)
+    }
+}
+
+define main() -> void {
+    // Int (64-bit) and Double
+    expect(9000000000 + 1 == 9000000001, "Int is 64-bit")
+    expect(7 / 2 == 3 and 7 % 2 == 1, "Int division / modulo")
+    expect(2.pow(10) == 1024, "Int.pow")
+    expect(1.5.str() == "1.5", "Double prints shortest form")
+    expect(Int.parse("42") == 42, "Int.parse")
+
+    // String
+    s := "héllo"
+    expect(s.length() == 5, "String.length counts characters")
+    expect(s.upper() == "HÉLLO", "String.upper")
+    expect("a,b,c".split(",").length() == 3, "String.split")
+    expect(", ".join(["x", "y"]) == "x, y", "String.join")
+    expect("ab".ljust(4) == "ab  ", "ljust pads with a space by default")
+    expect("ab".rjust(4, "0") == "00ab", "rjust with an explicit pad")
+
+    // List (sort works in place and returns the list)
+    expect([3, 1, 2].sort() == [1, 2, 3], "List.sort with no comparator")
+    expect([3, 1, 2].sort(fn(a, b) => b - a) == [3, 2, 1], "List.sort with a comparator")
+    xs := [3, 1, 2]
+    expect(xs.map(fn(x) => x * 2) == [6, 2, 4], "List.map")
+    expect(xs.filter(fn(x) => x > 1).length() == 2, "List.filter")
+    expect([1, 2] == [1, 2], "List == compares contents")
+
+    // Map and Set
+    m := Map()
+    m.put("k", 1)
+    expect(m.get("k") == 1 and m.has("k"), "Map put / get / has")
+    st := Set()
+    st.add(1)
+    st.add(1)
+    expect(st.length() == 1, "Set keeps one copy")
+
+    print("typing sanity: ok")
+}
