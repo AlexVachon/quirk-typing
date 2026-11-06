@@ -146,6 +146,23 @@ struct List : Printable, Representable, Sizeable, Iterable {
         define filter(self, cb: Callable) -> List
 
         ---
+        Sorts the list in place (stable) and returns it, for chaining.
+        With no comparator, values sort in natural order: numbers
+        numerically, Strings alphabetically. With one, `cb(a, b)` returns
+        a negative Int when `a` goes first, positive when after, zero when
+        equal.
+
+        @param cb: Callable — optional `fn(a, b) => Int`
+        @returns: List — the (now-sorted) self
+
+        @example:
+        [3, 1, 2].sort()                        // [1, 2, 3]
+        ["b", "a"].sort()                       // ["a", "b"]
+        [3, 1, 2].sort(fn(a, b) => b - a)       // [3, 2, 1]
+        ---
+        define sort(self, cb: Callable = null) -> List
+
+        ---
         Calls `cb` for each element. Returns nothing.
         @param cb: Callable — `fn(element: T) => void`
 
@@ -338,42 +355,5 @@ struct List : Printable, Representable, Sizeable, Iterable {
         return n
     }
 
-    ---
-    Sorts the list in place using `cb` as the comparator and returns
-    `self` so calls can chain. The comparator follows the usual
-    convention: return a negative Int when `a` should come before `b`,
-    positive when `a` should come after, and zero when they're equal.
-
-    Implementation is insertion sort — small N is the common stdlib
-    case and we don't yet have a quicksort runtime helper. For now,
-    if you need to sort 10k+ items, do it via C-side `extern`
-    plumbing.
-
-    @param cb: Callable — `fn(a: T, b: T) => Int`
-    @returns: List — the (now-sorted) self, for chaining
-
-    @example:
-    sorted := [3, 1, 2].sort(fn(a: Int, b: Int) => a - b)  // [1, 2, 3]
-    ---
-    define sort(self, cb: Callable) -> List {
-        n := self.length()
-        i := 1
-        while i < n {
-            j := i
-            while j > 0 {
-                a: Any := self.__get(j - 1)
-                b: Any := self.__get(j)
-                cmp: Int := cb(a, b)
-                if cmp <= 0 { j = 0 }
-                else {
-                    self.__set(j - 1, b)
-                    self.__set(j, a)
-                    j = j - 1
-                }
-            }
-            i = i + 1
-        }
-        return self
-    }
-
+    
 }

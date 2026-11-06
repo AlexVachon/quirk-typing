@@ -5,7 +5,7 @@ from typing.interfaces.parseable use { Parseable }
 
 ---
 64-bit signed integer.
-Supports arithmetic operators (`+`, `-`, `*`, `/`, `%`, `**`) and comparisons.
+Supports arithmetic operators (`+`, `-`, `*`, `/`, `%`; `n.pow(e)` for powers) and comparisons.
 
 @example:
 n := 42
