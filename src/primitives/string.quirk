@@ -134,9 +134,9 @@ struct String : Primitive, Comparable, Sizeable, Iterable, Representable {
         define reverse(self) -> String
 
         define zfill(self, width: Int) -> String
-        define ljust(self, width: Int, pad: String) -> String
-        define rjust(self, width: Int, pad: String) -> String
-        define center(self, width: Int, pad: String) -> String
+        define ljust(self, width: Int, pad: String = " ") -> String
+        define rjust(self, width: Int, pad: String = " ") -> String
+        define center(self, width: Int, pad: String = " ") -> String
 
         define trim(self) -> String
         define lstrip(self) -> String
