@@ -35,5 +35,6 @@ from .exceptions use {
     TypeError, ValueError, IndexError, KeyError,
     IOError, FileNotFoundError,
     RuntimeError, NotImplementedError,
-    SocketError, ZeroDivisionError, AssertionError, NullError
+    SocketError, ZeroDivisionError, AssertionError, NullError,
+    CancelledError
 }

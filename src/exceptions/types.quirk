@@ -210,6 +210,26 @@ struct AssertionError : Exception {
 }
 
 ---
+Raised inside a task when `task.cancel()` was called — at the task's next
+`sys.sleep`, `await` or `wait` (a sleep in progress is cut short). Catch it
+to clean up; awaiting a cancelled task raises it too.
+
+@example:
+async define worker() {
+    try {
+        while true { sys.sleep(100) }
+    } catch (e: CancelledError) {
+        print("stopping")
+    }
+}
+---
+struct CancelledError : Exception {
+    define __init(self, message: String) -> void {
+        super().__init(message)
+    }
+}
+
+---
 Raised when a null value is accessed where a non-null value is required. Inherits from RuntimeError.
 
 @note Check for null explicitly before accessing fields or calling methods on optional values.
