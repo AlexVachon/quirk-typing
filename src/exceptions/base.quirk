@@ -10,6 +10,8 @@ define _format_cause(prev: Exception) -> String {
     "During handling of the above exception, another exception occurred:\n\n"
 }
 
+extern define _eprint(text: String) -> void
+
 define _format_traceback(e: Exception) -> String {
     code := String(srcline(e.file._buffer, e.line))
     header: String = ""
@@ -66,6 +68,6 @@ struct Exception {
     }
 
     define print_traceback(self) -> void {
-        print(_format_traceback(self))
+        _eprint(_format_traceback(self))
     }
 }
