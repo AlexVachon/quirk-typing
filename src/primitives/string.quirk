@@ -180,6 +180,20 @@ struct String : Primitive, Comparable, Sizeable, Iterable, Representable {
         define distance(self, other: String) -> Int
 
         ---
+        The Unicode code point of character `index` (`"é".code()` is 233,
+        `"\n".code()` is 10), or -1 past the end.
+        @returns: Int
+        ---
+        define code(self, index: Int = 0) -> Int
+
+        ---
+        Every character's code point, in order — one pass over the string
+        (a parser reading characters by number).
+        @returns: List
+        ---
+        define codes(self) -> List
+
+        ---
         Returns `true` if the string has zero characters.
         @returns: Bool
         ---

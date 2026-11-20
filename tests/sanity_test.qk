@@ -41,5 +41,10 @@ define main() -> void {
     st.add(1)
     expect(st.length() == 1, "Set keeps one copy")
 
+    // Code points
+    expect("é".code() == 233 and "a\n".code(1) == 10 and "x".code(3) == -1, "String.code")
+    expect("hé🙂".codes() == [104, 233, 128578], "String.codes")
+    expect("  a  ".rstrip() == "  a" and "  a  ".lstrip() == "a  " and "  a  ".trim() == "a", "lstrip / rstrip: one end each")
+
     print("typing sanity: ok")
 }
