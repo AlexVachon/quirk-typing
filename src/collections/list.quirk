@@ -78,6 +78,20 @@ struct List : Printable, Representable, Sizeable, Iterable {
         define __mul(self, n: Int) -> List
 
         ---
+        Put `item` before index `index` (0 to the length: at the end; a
+        negative index counts from the end). The elements after it move up.
+        @example xs.insert(0, "first")
+        ---
+        define insert(self, index: Int, item: Any) -> void
+
+        ---
+        Remove the element at `index` (negative: from the end) and return it.
+        @throws IndexError — if there is no such element
+        @example second := xs.remove_at(1)
+        ---
+        define remove_at(self, index: Int) -> Any
+
+        ---
         Removes and returns the last element.
         @returns: Any — the removed element
         @throws IndexError — if the list is empty

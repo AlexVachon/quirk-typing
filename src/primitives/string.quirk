@@ -113,10 +113,12 @@ struct String : Primitive, Comparable, Sizeable, Iterable, Representable {
 
         ---
         Returns the index of the first occurrence of `sub`, or `-1` if not found.
+        With `start`: the first one at or after that index
+        (`"a-b-c".find("-", 2)` is 3).
         @param sub: String
         @returns: Int
         ---
-        define find(self, sub: String) -> Int
+        define find(self, sub: String, start: Int = 0) -> Int
 
         ---
         Like `find`, but throws `ValueError` if `sub` is not present.
